@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --global user.email "curator-bot@github.com"
           git config --global user.name "Curator Bot"
-          git add docs/digests/ vault/digests/
+          git add docs/digests/ vault/digests/ docs/digests/index.md
           DIGEST_DATE=$(date -u +%Y-%m-%d)
           git diff --staged --quiet || git commit -m "digest: ${DIGEST_DATE}" && git push
 

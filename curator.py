@@ -294,6 +294,35 @@ def write_digest(markdown: str, week_date: str) -> tuple[Path, Path]:
     return docs_path, vault_path
 
 
+def update_digest_index(week_date: str) -> None:
+    """Prepend a link for week_date to docs/digests/index.md if not already present."""
+    index_path = DOCS_DIGESTS / "index.md"
+    try:
+        display = datetime.strptime(week_date, "%Y-%m-%d").strftime("%B %-d, %Y")
+    except ValueError:
+        display = week_date
+    link = f"- [{display}]({week_date}.md)"
+
+    if index_path.exists():
+        text = index_path.read_text()
+        if link in text:
+            return
+        # Insert after the intro paragraph (first blank line after header block)
+        lines = text.splitlines(keepends=True)
+        # Find index of first list item line to prepend before it, or append at end
+        insert_at = len(lines)
+        for i, line in enumerate(lines):
+            if line.startswith("- "):
+                insert_at = i
+                break
+        lines.insert(insert_at, link + "\n")
+        index_path.write_text("".join(lines))
+    else:
+        index_path.write_text(
+            "# Weekly Digests\n\nAll weekly knowledge digests, newest first.\n\n" + link + "\n"
+        )
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -331,6 +360,7 @@ def main():
 
     print("\nStep 5: Writing output…")
     docs_path, vault_path = write_digest(markdown, week_date)
+    update_digest_index(week_date)
     print(f"  docs:  {docs_path}")
     print(f"  vault: {vault_path}")
 
