@@ -224,10 +224,10 @@ def _placeholder_digest(week_date: str, articles: list[dict]) -> dict:
 # ---------------------------------------------------------------------------
 
 SECTION_META = {
-    "read_this_week": ("🔴 Read This Week", "High signal, under 30 min each"),
-    "weekend_deep_dive": ("🟡 Weekend Deep Dive", "High depth, 45+ min"),
-    "cross_domain_spark": ("🔵 Cross-Domain Spark", "One item outside your primary domains"),
-    "archive_reference": ("🗄️ Archive Reference", "Noteworthy but not urgent"),
+    "read_this_week": ("Read This Week", "High signal — read these first"),
+    "weekend_deep_dive": ("Weekend Deep Dive", "One long-form piece worth the time"),
+    "cross_domain_spark": ("Cross-Domain Spark", "Outside your primary domains"),
+    "archive_reference": ("Archive (Optional)", "Bookmark — not urgent"),
 }
 
 
@@ -238,6 +238,14 @@ def render_markdown(digest: dict) -> str:
     except ValueError:
         display_date = week
 
+    active_minutes = digest.get("total_active_minutes")
+    if active_minutes is None:
+        active_minutes = sum(
+            item.get("estimated_minutes", 0)
+            for key in ("read_this_week", "weekend_deep_dive")
+            for item in digest.get(key, [])
+        )
+
     lines = [
         f"---",
         f"date: {week}",
@@ -245,6 +253,8 @@ def render_markdown(digest: dict) -> str:
         f"---",
         f"",
         f"# Weekly Knowledge Digest — {display_date}",
+        f"",
+        f"> **~{active_minutes} min of active reading this week.**",
         f"",
     ]
 
