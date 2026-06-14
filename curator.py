@@ -291,6 +291,19 @@ def write_digest(markdown: str, week_date: str) -> tuple[Path, Path]:
     docs_path.write_text(markdown)
     vault_path.write_text(markdown)
 
+    # Update digests/index.md with a link to this digest
+    index_path = DOCS_DIGESTS / "index.md"
+    if index_path.exists():
+        index_text = index_path.read_text()
+        link = f"- [{week_date}]({week_date}.md)"
+        if link not in index_text:
+            # Parse display date for the link label
+            from datetime import datetime
+            label = datetime.strptime(week_date, "%Y-%m-%d").strftime("%B %-d, %Y")
+            link = f"- [{label}]({week_date}.md)"
+            index_text = index_text.rstrip() + f"\n{link}\n"
+            index_path.write_text(index_text)
+
     return docs_path, vault_path
 
 
