@@ -1,0 +1,51 @@
+name: Weekly Knowledge Digest
+
+on:
+  schedule:
+    - cron: '0 8 * * 0'   # Sunday 8am UTC
+  workflow_dispatch:        # Manual trigger for testing
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history needed for git push
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python curator.py
+
+      - name: Commit generated markdown
+        run: |
+          git config --global user.email "curator-bot@github.com"
+          git config --global user.name "Curator Bot"
+          git add docs/digests/ vault/digests/
+          DIGEST_DATE=$(date -u +%Y-%m-%d)
+          git diff --staged --quiet || git commit -m "digest: ${DIGEST_DATE}" && git push
+
+      - name: Build MkDocs site
+        run: mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site

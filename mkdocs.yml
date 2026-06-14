@@ -1,0 +1,34 @@
+site_name: Knowledge Curator
+site_description: Weekly curated reading digest
+site_url: ""  # set to your GitHub Pages URL after deploy
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+nav:
+  - Dashboard: index.md
+  - Reading List: reading-list.md
+  - Digests: digests/
+
+plugins:
+  - search
+  - tags
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true

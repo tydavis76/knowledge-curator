@@ -1,0 +1,43 @@
+feeds:
+  ai_systems:
+    - name: "Ahead of AI"
+      url: "https://magazine.sebastianraschka.com/feed"
+      tier: weekly
+    - name: "Latent Space"
+      url: "https://www.latent.space/feed"
+      tier: weekly
+    - name: "TLDR AI"
+      url: "https://tldr.tech/ai/rss"
+      tier: daily
+
+  distributed_systems:
+    - name: "ACM Queue"
+      url: "https://queue.acm.org/rss/feeds/queuecontent.xml"
+      tier: weekly
+    - name: "Netflix Tech Blog"
+      url: "https://netflixtechblog.com/feed"
+      tier: weekly
+    - name: "Uber Engineering"
+      url: "https://www.uber.com/en-US/blog/engineering/rss/"
+      tier: weekly
+
+  economics_finance:
+    - name: "Marginal Revolution"
+      url: "https://marginalrevolution.com/feed"
+      tier: daily
+    - name: "Epsilon Theory"
+      url: "https://www.epsilontheory.com/feed/"
+      tier: weekly
+
+  science_complexity:
+    - name: "Quanta Magazine"
+      url: "https://www.quantamagazine.org/feed/"
+      tier: weekly
+    - name: "Santa Fe Institute News"
+      url: "https://www.santafe.edu/news-center/news/rss.xml"
+      tier: weekly
+
+  philosophy_foundations:
+    - name: "Aeon Essays"
+      url: "https://aeon.co/feed.rss"
+      tier: weekly
