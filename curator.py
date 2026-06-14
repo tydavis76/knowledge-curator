@@ -304,6 +304,28 @@ def write_digest(markdown: str, week_date: str) -> tuple[Path, Path]:
     return docs_path, vault_path
 
 
+def write_dashboard(markdown: str, week_date: str) -> None:
+    """Overwrite docs/index.md with the current digest as the dashboard."""
+    try:
+        display = datetime.strptime(week_date, "%Y-%m-%d").strftime("%B %-d, %Y")
+    except ValueError:
+        display = week_date
+
+    # Strip the digest's YAML frontmatter block (---...---) and use the body only.
+    body = re.sub(r"^---\n.*?\n---\n", "", markdown, count=1, flags=re.DOTALL).lstrip("\n")
+
+    dashboard = (
+        "---\n"
+        "tags: [dashboard]\n"
+        "---\n"
+        "\n"
+        + body
+        + "\n\n---\n\n"
+        f"[All past digests →](digests/index.md)\n"
+    )
+    (REPO_ROOT / "docs" / "index.md").write_text(dashboard)
+
+
 def update_digest_index(week_date: str) -> None:
     """Prepend a link for week_date to docs/digests/index.md if not already present."""
     index_path = DOCS_DIGESTS / "index.md"
@@ -371,6 +393,7 @@ def main():
     print("\nStep 5: Writing output…")
     docs_path, vault_path = write_digest(markdown, week_date)
     update_digest_index(week_date)
+    write_dashboard(markdown, week_date)
     print(f"  docs:  {docs_path}")
     print(f"  vault: {vault_path}")
 
