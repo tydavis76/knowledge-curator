@@ -9,6 +9,21 @@ feeds:
     - name: "TLDR AI"
       url: "https://tldr.tech/ai/rss"
       tier: daily
+    - name: "Interconnects"
+      url: "https://www.interconnects.ai/feed"
+      tier: weekly
+    - name: "Simon Willison's Weblog"
+      url: "https://simonwillison.net/atom/everything/"
+      tier: daily
+    - name: "Chip Huyen"
+      url: "https://huyenchip.com/feed.xml"
+      tier: weekly
+    - name: "Eugene Yan"
+      url: "https://eugeneyan.com/rss.xml"
+      tier: weekly
+    - name: "The Batch"
+      url: "https://www.deeplearning.ai/the-batch/feed/"
+      tier: weekly
 
   distributed_systems:
     - name: "ACM Queue"
@@ -20,6 +35,21 @@ feeds:
     - name: "Uber Engineering"
       url: "https://www.uber.com/en-US/blog/engineering/rss/"
       tier: weekly
+    - name: "Cloudflare Blog"
+      url: "https://blog.cloudflare.com/rss/"
+      tier: weekly
+    - name: "High Scalability"
+      url: "http://feeds.feedburner.com/HighScalability"
+      tier: weekly
+    - name: "Aphyr (Jepsen)"
+      url: "https://aphyr.com/feed.atom"
+      tier: weekly
+    - name: "Meta Engineering"
+      url: "https://engineering.fb.com/feed/"
+      tier: weekly
+    - name: "Stripe Engineering"
+      url: "https://stripe.com/blog/engineering/rss.xml"
+      tier: weekly
 
   economics_finance:
     - name: "Marginal Revolution"
@@ -27,6 +57,12 @@ feeds:
       tier: daily
     - name: "Epsilon Theory"
       url: "https://www.epsilontheory.com/feed/"
+      tier: weekly
+    - name: "Noahpinion"
+      url: "https://noahpinion.substack.com/feed"
+      tier: weekly
+    - name: "Bits About Money"
+      url: "https://www.bitsaboutmoney.com/archive/rss/"
       tier: weekly
 
   science_complexity:
@@ -36,8 +72,31 @@ feeds:
     - name: "Santa Fe Institute News"
       url: "https://www.santafe.edu/news-center/news/rss.xml"
       tier: weekly
+    - name: "Nautilus"
+      url: "https://nautil.us/feed/"
+      tier: weekly
+    - name: "Complexity Digest"
+      url: "https://comdig.unam.mx/feed/"
+      tier: weekly
 
   philosophy_foundations:
     - name: "Aeon Essays"
       url: "https://aeon.co/feed.rss"
+      tier: weekly
+    - name: "Psyche"
+      url: "https://psyche.co/feed.rss"
+      tier: weekly
+    - name: "Farnam Street"
+      url: "https://fs.blog/feed/"
+      tier: weekly
+    - name: "3 Quarks Daily"
+      url: "https://3quarksdaily.com/feed"
+      tier: daily
+
+  software_practice:
+    - name: "The Pragmatic Engineer"
+      url: "https://newsletter.pragmaticengineer.com/feed"
+      tier: weekly
+    - name: "InfoQ"
+      url: "https://feed.infoq.com/"
       tier: weekly
