@@ -19,7 +19,7 @@ theme:
 nav:
   - Dashboard: index.md
   - Reading List: reading-list.md
-  - Digests: digests/index.md
+  - Digests: digests/
 
 plugins:
   - search

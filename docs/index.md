@@ -25,7 +25,7 @@ Every Sunday at 8am UTC, a GitHub Action:
 
 ## Recent Digests
 
-See the [Digests](digests/index.md) section in the nav for all weekly issues.
+See the [Digests](digests/) section in the nav for all weekly issues.
 
 ## Tuning
 
