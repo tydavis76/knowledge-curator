@@ -2,6 +2,21 @@
 
 A GitHub Pages project that generates a weekly curated reading digest from RSS feeds using Claude AI.
 
+## Design docs & the `/goal` workflow
+
+Two internal docs (in `docs/`, excluded from the published site via `mkdocs.yml`):
+
+- `docs/architecture.md` — the governing design spec for the full target system. Use it for *how* to build: data models, graph/service design, build sequence (§13). Read its "Document Status" section first — most of it is target architecture, not what's shipped today.
+- `docs/phase-criteria.md` — the acceptance criteria per §13 task: a measurable **Done when** condition, the **Verify** commands, and the expected result, plus phase exit gates.
+
+When implementing a build task:
+
+1. Follow `docs/architecture.md` for the design.
+2. Treat the matching task in `docs/phase-criteria.md` as the definition of done.
+3. Always run the task's **Verify** commands **and** the global gates (`ruff check .`, `mypy app/`, `pytest --cov=app`, and the frontend build when it exists), and **print their output** before claiming a task or goal is complete.
+
+`/goal` notes: drive it **one task per invocation**. The `/goal` evaluator only reads the conversation transcript — it does not open files or run commands itself — so phrase the goal around observable evidence and surface the Verify command output (exit 0) in the chat. Reference `docs/architecture.md` by name for design; copy the **Done when + Verify** lines from `docs/phase-criteria.md` into the goal condition. Items flagged ⚠ in `phase-criteria.md` are quality judgments that require human sign-off and must not be used as `/goal` conditions.
+
 ## Architecture
 
 ```

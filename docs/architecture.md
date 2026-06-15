@@ -8,6 +8,21 @@
 
 ---
 
+## Document Status — Spec vs. Shipped Reality
+
+This document is the **governing architecture spec** for this repository. It describes the full target system ("Signal"). The repository today implements a deliberately minimal **Phase 0** of that target — read this section before treating any later section as a description of what currently exists.
+
+**What is actually shipped today (Phase 0):**
+
+- A single script, `curator.py` — fetches RSS feeds (`feedparser`), scores/buckets articles via one Claude API call (`anthropic`, model `claude-sonnet-4-6`), and renders a markdown digest. No database, no LangGraph, no web service.
+- Sources defined in `sources.yaml`; the scoring prompt in `prompt_template.md`.
+- Output published as a static MkDocs (Material) site via a weekly GitHub Actions cron (`.github/workflows/weekly.yml`), deployed to GitHub Pages. Digests mirrored to `vault/digests/` for Obsidian.
+- The shipped scoring prompt is **simpler than the §7.1 target**: it buckets into the four tiers and emits `{title, url, source, why, domain, estimated_minutes}` only — no numeric signal/durability scores, no summary styles, no challenges, no edge report. The live tier caps in `prompt_template.md` (`read_this_week` 3–5 items / ≤60 min total; `weekend_deep_dive` exactly 1; `cross_domain_spark` exactly 1; `archive_reference` 0–5) are authoritative for Phase 0 and intentionally differ from the aspirational caps in §4.1.
+
+**What is target architecture, not yet built:** everything involving PostgreSQL/pgvector, Redis, Celery, LangGraph, FastAPI, Next.js, Clerk, WebSockets, the knowledge graph, challenges, edge intelligence, spaced repetition, and the progression/game layer (§5–§12). The §13 build sequence is the migration path from the shipped script to that target; see the Phase 0 note in §13.
+
+---
+
 ## Table of Contents
 
 1. [Product Vision & Positioning](#1-product-vision--positioning)
@@ -361,8 +376,8 @@ User can:
 
 **Processing:**
 1. Fetch all articles from configured sources for period
-2. Deduplicate by URL normalization + title embedding similarity (pgvector cosine distance)
-3. Extract full text via Readability extraction; fall back to excerpt
+2. Deduplicate by URL normalization + title embedding similarity (pgvector cosine similarity)
+3. Extract full text via `trafilatura`; fall back to excerpt
 4. Score articles via Claude API (see AI Layer §7.1)
 5. Bucket into tiers: Read Now / Weekend Deep Dive / Cross-Domain Spark / Archive / Filtered
 6. Generate cliff-notes summary per article in user's chosen style
@@ -558,7 +573,181 @@ crypto_protocols:
     - {name: "Ethereum Research", url: "https://ethresear.ch/latest.rss"}
 ```
 
-### 4.7 Output Formats
+### 4.7 Condensed Article Summaries (Blinkist Layer)
+
+**Intent**
+
+For each article in `read_this_week` and `weekend_deep_dive`, Signal generates a 250–400 word condensed version before the user reads the full piece. Unlike the four cliff-notes styles (§4.1, detailed in §7.1), which serve as post-read reinforcement, this is a *pre-read extract* — enough substance to make a real save/skip decision and to prime the reader's frame before they invest the full time.
+
+The model is Blinkist for professional nonfiction: extract the core argument, the evidence that makes it credible, and the single most important implication for the reader's domain. If someone only ever reads the condensed version, they should still walk away with the article's most durable idea.
+
+**Structure (rendered in a collapsible block)**
+
+```
+**Core argument:** One paragraph (3–5 sentences). The central claim and why it matters now.
+
+**Key evidence or mechanism:** The 2–3 most important supporting points, data, or mechanisms
+that make the argument credible. What would a skeptic need to see?
+
+**What changes after reading this:** One paragraph. How should this alter a design decision,
+a reasoning pattern, or a mental model? Not "this is useful" — specific: "when you encounter
+X, you should now think Y instead of Z."
+```
+
+**Scope and cost**
+
+Applied only to `read_this_week` and `weekend_deep_dive`. Condensing archive or cross-domain spark items adds API cost without proportional value — the point of those tiers is triage, not extraction.
+
+Content is fetched via `trafilatura` after scoring (during the digest scoring pass — not to be confused with build Phase 1 in §13). If `trafilatura` returns `None` (paywall, JS-rendered, fetch failure), the condensed summary is omitted for that article and the full article card renders without it. Fetch failure is non-blocking.
+
+**Implementation notes**
+
+- `trafilatura` is more robust than `newspaper3k` against modern sites; use it as the primary extractor
+- Cap article text at 8,000 tokens before sending to Claude to control cost
+- Model: `claude-haiku` (same as cliff-notes summaries — structured extraction task, not reasoning)
+- Prompt externalized to `app/prompts/condensed_summary.md`
+- New field on `article_scores`: `condensed_summary TEXT` (nullable)
+- Adds `trafilatura>=1.9.0` to `requirements.txt`
+
+**Rendered output (MkDocs admonition)**
+
+```markdown
+??? note "Condensed Summary"
+    **Core argument:** ...
+
+    **Key evidence or mechanism:** ...
+
+    **What changes after reading this:** ...
+```
+
+The collapsible prevents digest wall-of-text while keeping the extract one click away.
+
+**Condensed summary prompt** (`app/prompts/condensed_summary.md`)
+
+```
+You are summarizing a technical or intellectual article for a senior software engineer
+whose goal is to maintain durable reasoning advantage over AI systems.
+
+Article title: {TITLE}
+Article text:
+{ARTICLE_TEXT}
+
+Write a condensed version in exactly this structure:
+
+**Core argument:** One paragraph (3–5 sentences) stating the central claim and why it matters.
+
+**Key evidence or mechanism:** The 2–3 most important supporting points, data, or mechanisms.
+What makes the argument credible? Be specific — not "research shows" but "the 2023 study
+measured X and found Y under condition Z."
+
+**What changes after reading this:** One paragraph on how this should alter reasoning, system
+design decisions, or mental models. Be specific — not "this is useful" but "when you encounter
+X, you should now think Y instead of Z."
+
+Do not pad. Do not meta-comment on the article. Be as dense as the source allows.
+```
+
+---
+
+### 4.8 Reading Activation Questions
+
+**Intent**
+
+For each article in `read_this_week` and `weekend_deep_dive`, Signal generates 4–6 questions the user should hold in mind *before and while* reading. These are not comprehension questions asked after the fact — they are attention-direction tools that activate relevant prior knowledge, prime the reader to notice the most important ideas, and frame the article inside the user's North Star goal: **maintaining durable reasoning advantage over AI systems**.
+
+This is distinct from Challenges (§4.3 / §7.2). Challenges are post-read Socratic evaluations that test what was understood and update the knowledge graph. Reading questions are pre-read priming that direct the reading itself. The interaction model is different: challenges require a user response; reading questions are displayed and then the user clicks through to read.
+
+**Question frame**
+
+Questions use the journalism frame (who/what/how/why/where/when) but filtered through the specific lens of durable professional advantage:
+
+- **Why** does this argument hold, and under what conditions does it break?
+- **How** would this change a design decision you would make tomorrow?
+- **Where** does this failure mode or pattern appear in other domains you work in?
+- **What** would you have to believe for this analysis to be wrong?
+- **When** does this matter more — what future condition amplifies the insight?
+- **Who** is the intended audience, and what does that reveal about framing or blind spots?
+
+Not all frames apply to every article. Claude selects the 4–6 that are highest-leverage for that specific piece.
+
+**Generated during the scoring pass (no separate API call)**
+
+Reading questions are included in the scoring prompt output — Claude generates them with full context of why the article was selected and what tier it earned. This avoids a separate API call and ensures the questions are coherent with the `why_it_matters` rationale.
+
+**Schema addition**
+
+```json
+{
+  "title": "...",
+  "url": "...",
+  "source": "...",
+  "why": "...",
+  "domain": "...",
+  "estimated_minutes": 12,
+  "reading_questions": [
+    "Why does the author's core claim hold here, and what edge case would break it?",
+    "How would this change how you design the next system that touches this problem?",
+    "Where else does this failure mode appear — what other domain has this exact shape?",
+    "What would you have to believe for this analysis to be wrong?"
+  ]
+}
+```
+
+**Prompt addition** (appended to `app/prompts/scoring.md`, inside the article output schema)
+
+```
+"reading_questions": [
+  "Generate 4–6 questions the reader should hold in mind before and during reading.",
+  "Anchor to the reader's goal: maintaining durable reasoning advantage over AI systems.",
+  "Use the how/why/where/when/what/who frame — select only the highest-leverage frames for this article.",
+  "Do NOT ask recall questions ('What did the author say about X?').",
+  "Ask activation questions that prime transfer: 'Where else does this pattern appear?',",
+  "'What would have to be true for this to be wrong?',",
+  "'How does this change a design decision you would have made yesterday?'"
+]
+```
+
+**Rendered output**
+
+```markdown
+**Before you read — hold these questions:**
+
+- Why does this argument hold here, and what edge case would break it?
+- How would this change a design decision you would make tomorrow?
+- Where else does this failure mode appear — what other domain has this exact shape?
+- What would you have to believe for this analysis to be wrong?
+```
+
+**Full article card after both features**
+
+Each `read_this_week` and `weekend_deep_dive` item renders as:
+
+```markdown
+### [Title](url)
+**Source:** Latent Space | **Domain:** AI Systems | **~12 min**
+
+*Why it matters:* One sharp sentence on what decision or model changes after reading.
+
+**Before you read — hold these questions:**
+
+- Why does the argument hold, and under what conditions does it break?
+- How does this change a design decision you would make tomorrow?
+- Where else does this failure mode or pattern appear?
+- What would you have to believe for this to be wrong?
+
+??? note "Condensed Summary"
+    **Core argument:** ...
+
+    **Key evidence or mechanism:** ...
+
+    **What changes after reading this:** ...
+
+---
+```
+
+---
+
+### 4.9 Output Formats
 
 **Web Dashboard** — Primary. Responsive. Dark mode only (no toggle — it's a design choice, not a preference).
 
@@ -846,6 +1035,8 @@ CREATE TABLE article_scores (
     summary_narrative       TEXT,
     summary_bullet          TEXT,
     summary_socratic        TEXT,
+    condensed_summary       TEXT,            -- §4.7 pre-read extract (nullable)
+    reading_questions       JSONB,           -- §4.8 activation questions (nullable)
     challenge_question      TEXT,
     scored_at               TIMESTAMPTZ DEFAULT NOW(),
     PRIMARY KEY (article_id, user_id)
@@ -1196,7 +1387,8 @@ benchmark leaderboards, marketing content, content irrelevant in 12 months.
 
 Output: strict JSON array. Schema: {article_id, signal_score, durability_score,
 architectural_impact, cross_domain_score, digest_tier, estimated_minutes,
-domains_confirmed, why_it_matters, filter_reason}
+domains_confirmed, why_it_matters, reading_questions, filter_reason}
+(reading_questions generated for read_now/deep_dive items only — see §4.8.)
 ```
 
 **Summary node** generates all four styles in parallel (Haiku). Four prompts externalized:
@@ -1294,7 +1486,7 @@ class EdgeReportState(TypedDict):
 # filter_ai_capability(state)     → extract AI advance items from digest
 # generate_report(state)          → claude-sonnet-4-6; structured edge report
 # extract_skill_deltas(state)     → claude-haiku; parse report for skill changes
-# persist_report(state)           → write edge_reports + update skill_durability
+# persist_report(state)           → write digests.edge_report + update skill_durability
 ```
 
 **Edge report prompt** (externalized to `app/prompts/edge_report.md`):
@@ -1392,6 +1584,7 @@ app/prompts/
 ├── summary_narrative.md
 ├── summary_bullet.md
 ├── summary_socratic.md
+├── condensed_summary.md
 ├── challenge_generate.md
 ├── challenge_evaluate.md
 ├── edge_report.md
@@ -1880,11 +2073,13 @@ signal-backend/
 │   │   ├── summary_narrative.md
 │   │   ├── summary_bullet.md
 │   │   ├── summary_socratic.md
+│   │   ├── condensed_summary.md
 │   │   ├── challenge_generate.md
 │   │   ├── challenge_evaluate.md
-│   │   ├── review_challenge.md     # Spaced-repetition review question
+│   │   ├── review_generate.md      # Spaced-repetition review question
 │   │   ├── edge_report.md
-│   │   └── graph_extract.md
+│   │   ├── graph_extract.md
+│   │   └── explore_synthesize.md
 │   │
 │   └── middleware/
 │       ├── auth.py                 # Clerk JWT validation
@@ -1996,13 +2191,13 @@ Free tier is a loss leader — acceptable if conversion to Pro is ≥5%.
 ### 12.4 Rate Limiting
 
 ```python
-# Per user per hour
+# Per user. Window varies by action (some are hourly, some daily).
 RATE_LIMITS = {
-    "api_requests": 200,
-    "challenge_responses": 10,
-    "explore_searches": 20,
-    "deep_research_jobs": 3,     # Pro only
-    "digest_regeneration": 1,
+    "api_requests":        {"limit": 200, "window": "hour"},
+    "explore_searches":    {"limit": 20,  "window": "hour"},
+    "digest_regeneration": {"limit": 1,   "window": "hour"},
+    "challenge_responses": {"limit": 10,  "window": "day"},   # matches CHALLENGE_DAILY_LIMIT (§10.2)
+    "deep_research_jobs":  {"limit": 3,   "window": "day"},   # Pro only; matches EXPLORE_DEEP_RESEARCH_LIMIT (§10.2)
 }
 ```
 
@@ -2012,6 +2207,8 @@ RATE_LIMITS = {
 
 ### Phase 0 — Personal MVP (Week 1–3)
 *Goal: Working personal tool. Validates curation + scoring pipeline.*
+
+> **Shipped reality (see Document Status above):** Phase 0 was delivered in a simplified, **stack-free** form — a single `curator.py` (feedparser + one Claude call + markdown render) published via MkDocs + GitHub Actions, with **no PostgreSQL/pgvector, no LangGraph, and no FastAPI/Celery**. Tasks 0.2 and 0.4 below describe the *intended* database- and graph-backed pipeline; that work is effectively **deferred to Phase 1** as the migration target. The shipped Phase 0 corresponds to a collapsed version of Tasks 0.3, 0.6, and 0.7 only. The task list below is retained as the design-complete target for the rebuild.
 
 **Agent Task 0.1: Repository Setup**
 - Create GitHub repository `signal`
@@ -2029,7 +2226,7 @@ RATE_LIMITS = {
 - Deliverable: `alembic upgrade head` creates all tables; tests pass
 
 **Agent Task 0.3: Ingestion Pipeline**
-- Implement `ingestion_service.py`: feedparser + Readability extraction
+- Implement `ingestion_service.py`: feedparser + `trafilatura` extraction
 - Implement `sources.yaml` loader
 - Implement URL normalization + deduplication
 - Write unit tests with mock feeds
@@ -2384,7 +2581,7 @@ RATE_LIMITS = {
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| RSS feeds unreliable / paywalled | High | Medium | Readability fallback; source quality monitoring; consider newsletter parser (Mailgun inbound) for email newsletters |
+| RSS feeds unreliable / paywalled | High | Medium | `trafilatura` extraction with excerpt fallback; source quality monitoring; consider newsletter parser (Mailgun inbound) for email newsletters |
 | Claude API latency spikes during digest generation | Medium | Medium | Async generation (user not waiting); retry with backoff; status page communication |
 | pgvector performance degrades at scale | Low | Medium | IVFFlat index tuned from day one; migration path to Pinecone documented in ADR-002 |
 | Edge report quality too generic | High | Critical | Extensive prompt iteration before launch; human review of first 100 edge reports; explicit quality gate before monetization |

@@ -20,6 +20,11 @@ nav:
   - Dashboard: index.md
   - Digests: digests/index.md
 
+# Internal design docs — kept in the repo, excluded from the published site.
+exclude_docs: |
+  architecture.md
+  phase-criteria.md
+
 plugins:
   - search
   - tags
