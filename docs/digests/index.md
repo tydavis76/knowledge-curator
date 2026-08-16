@@ -2,6 +2,7 @@
 
 All weekly knowledge digests, newest first.
 
+- [August 16, 2026](2026-08-16.md)
 - [August 9, 2026](2026-08-09.md)
 - [August 2, 2026](2026-08-02.md)
 - [July 26, 2026](2026-07-26.md)
