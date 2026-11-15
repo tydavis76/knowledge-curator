@@ -2,194 +2,194 @@
 tags: [dashboard]
 ---
 
-# Weekly Knowledge Digest — November 8, 2026
+# Weekly Knowledge Digest — November 15, 2026
 
-> **~216 min of active reading this week.**
+> **~191 min of active reading this week.**
 
 ## Read This Week
 *High signal — read these first*
 
-### [How we halved DNS build delay and cut memory use by 85%](https://blog.cloudflare.com/dns-targeted-zone-builds)
-**Source:** Cloudflare Blog | **Domain:** Distributed Systems | **~10 min**
+### [Choosing QuePaxa, an unusual consensus algorithm](https://blog.cloudflare.com/choosing-quepaxa)
+**Source:** Cloudflare Blog | **Domain:** Distributed Systems | **~14 min**
 
-*Why it matters:* Replaces the naive 'rebuild everything on any change' mental model with a dependency-aware build planner — a generalizable pattern for any large mutable state system under partial updates.
+*Why it matters:* Forces you to reason about consensus algorithm selection tradeoffs beyond Raft/Paxos by showing why a never-deployed algorithm earned production trust at Cloudflare scale.
 
 ---
 
-### [F3 Lightning: How Meta Accelerates Ads ML Features to Production at Scale](https://engineering.fb.com/2026/11/03/ml-applications/f3-lightning-how-meta-accelerates-ads-ml-features-to-production)
+### [How We Built TLX: A Hardware-Native GPU Compiler for Production ML at Scale](https://engineering.fb.com/2026/11/10/open-source/tlx-a-hardware-native-gpu-compiler-for-production-ml)
 **Source:** Meta Engineering | **Domain:** Distributed Systems | **~14 min**
 
-*Why it matters:* Reframes ML feature serving not as a data pipeline problem but as a compilation and execution problem — the compile/serve split is a durable architectural pattern for high-fanout ranking systems.
+*Why it matters:* Reframes GPU optimization as a compiler abstraction problem — the warp-group/cluster orchestration model here is the durable mental model for reasoning about hardware-software co-design as accelerator diversity expands.
 
 ---
 
-### [Agents aren't humans (but they kinda are)](https://blog.cloudflare.com/trusted-agent-delegation)
-**Source:** Cloudflare Blog | **Domain:** Distributed Systems | **~10 min**
+### [Adapting to AI penetration testing orchestrators: The Modern Security Model](https://blog.cloudflare.com/adapting-to-ai-penetration-testing-orchestrators)
+**Source:** Cloudflare Blog | **Domain:** Distributed Systems | **~12 min**
 
-*Why it matters:* Introduces the delegation-chain problem for AI agents at the infrastructure layer — forces you to reason about identity, authorization, and accountability in multi-agent systems before you hit it in production.
-
----
-
-### [New Research Tests Whether AI Models Know Their Own Thoughts](https://www.quantamagazine.org/new-research-tests-whether-ai-models-know-their-own-thoughts-20261104)
-**Source:** Quanta Magazine | **Domain:** Ai Systems | **~12 min**
-
-*Why it matters:* Operationalizes AI introspection as an empirical question via activation injection — changes how you think about model interpretability and the gap between reported reasoning and actual computation.
+*Why it matters:* Shifts your threat model from human adversaries to autonomous orchestrators — the countermeasure framework here generalizes to any infrastructure exposed to AI-driven attack surfaces.
 
 ---
 
-### [Untethered AI agents in Delaware?](https://marginalrevolution.com/marginalrevolution/2026/11/untethered-ai-agents-in-delaware.html)
-**Source:** Marginal Revolution | **Domain:** Economics Finance | **~11 min**
+### [AI and complements](https://marginalrevolution.com/marginalrevolution/2026/11/ai-and-complements.html)
+**Source:** Marginal Revolution | **Domain:** Economics Finance | **~8 min**
 
-*Why it matters:* AI-managed legal entities with sue-and-be-sued capacity reframes the principal-agent problem from a software concern to a legal infrastructure concern — the institutional scaffolding around agents matters as much as the agents themselves.
-
----
-
-### [The Logic of Emergence](https://comdig.cssociety.org/2026/11/08/the-logic-of-emergence)
-**Source:** Complexity Digest | **Domain:** Science Complexity | **~15 min**
-
-*Why it matters:* Wolpert and Krakauer's formalization of emergence across scales gives you a rigorous vocabulary for the most hand-wavy concept in distributed systems reasoning — when a new mathematical language is actually required versus when it's just convenience.
+*Why it matters:* The weak-links/complementarity framing gives you a precise economic lens for predicting where AI automation gains will stall in complex systems — directly applicable to reasoning about where to invest in reliability engineering.
 
 ---
 
-### [How Much Does Claude's Constitution Actually Matter?](https://3quarksdaily.com/3quarksdaily/2026/11/how-much-does-claudes-constitution-actually-matter.html)
-**Source:** 3 Quarks Daily | **Domain:** Ai Systems | **~12 min**
+### [Agentic AI needs a science of interaction](https://comdig.cssociety.org/2026/11/14/agentic-ai-needs-a-science-of-interaction)
+**Source:** Complexity Digest | **Domain:** Ai Systems | **~12 min**
 
-*Why it matters:* Treats AI alignment documents as mechanism design artifacts — asking whether specification actually binds behavior — which reframes how you evaluate any policy-layer control plane in production AI systems.
-
----
-
-### [Information-thermodynamic principles unveil the response of complex networks to perturbations](https://comdig.cssociety.org/2026/11/03/information-thermodynamic-principles-unveil-the-response-of-complex-networks-to-perturbations)
-**Source:** Complexity Digest | **Domain:** Distributed Systems | **~14 min**
-
-*Why it matters:* Establishes that maximum-entropy perturbations cannot increase response diversity under standard diffusion — a formal bound directly applicable to failure propagation analysis in distributed systems.
+*Why it matters:* Reframes multi-agent AI from a model-composition problem to an interaction-science problem, forcing you to think about emergent coordination failures before they hit production.
 
 ---
 
-### [Adaptive cut reveals multiscale complexity in networks](https://comdig.cssociety.org/2026/11/07/adaptive-cut-reveals-multiscale-complexity-in-networks)
-**Source:** Complexity Digest | **Domain:** Science Complexity | **~11 min**
+### [Are we witnessing an intelligence explosion?](https://marginalrevolution.com/marginalrevolution/2026/11/are-we-witnessing-an-intelligence-explosion.html)
+**Source:** Marginal Revolution | **Domain:** Ai Systems | **~8 min**
 
-*Why it matters:* Replaces fixed-resolution cluster detection with a data-driven adaptive method — changes how you should think about partitioning and service boundary decisions in systems that exhibit natural hierarchy.
-
----
-
-### [Cloudflare Scales D1 Control Plane to Millions of Databases](https://www.infoq.com/news/2026/11/cloudflare-d1-control-plane)
-**Source:** InfoQ | **Domain:** Distributed Systems | **~10 min**
-
-*Why it matters:* The design decisions around avoiding centralized bottlenecks, enforcing idempotency, and embracing eventual consistency in a control plane at this scale encode durable patterns directly applicable to any distributed metadata service.
+*Why it matters:* Capability gains per dollar falling 69% while spend 6x'd is a durable signal about diminishing returns in AI scaling — changes how you allocate infrastructure investment and interpret benchmark progress.
 
 ---
 
-### [Article: Identity as an Architectural Concern: Enterprise IAM Beyond Authentication](https://www.infoq.com/articles/identity-as-architecture)
-**Source:** InfoQ | **Domain:** Distributed Systems | **~14 min**
+### [Decision Models as Scalable Economic Surrogates that Capture Human Variation](https://comdig.cssociety.org/2026/11/12/decision-models-as-scalable-economic-surrogates-that-capture-human-variation)
+**Source:** Complexity Digest | **Domain:** Ai Systems | **~12 min**
 
-*Why it matters:* Reframes identity from operational plumbing to a first-class architectural constraint that determines data model topology, service boundaries, and revocation propagation — a mental shift with broad system design consequences.
-
----
-
-### [How Grab Improved Mobile App Stability by Safely Handling Surge in AI-Generated Code Changes](https://www.infoq.com/news/2026/11/grab-ai-generated-code-safety)
-**Source:** InfoQ | **Domain:** Ai Systems | **~10 min**
-
-*Why it matters:* A concrete production post-mortem on the feedback loop between AI-accelerated code velocity and defect rate, with a layered containment strategy that generalizes to any high-throughput change pipeline.
+*Why it matters:* Introduces Decision Models as a distinct AI class — probabilistic, fast, distributional — that changes how you design simulation and evaluation pipelines for systems with human-in-the-loop components.
 
 ---
 
-### [Edera's Object Capability Bounded Authority Promises to Isolate Credentials from AI Agent Workloads](https://www.infoq.com/news/2026/11/ai-credentials-isolation)
+### [Stigmergy: bottom-up coordination, from molecules to collective intelligence](https://comdig.cssociety.org/2026/11/14/stigmergy-bottom-up-coordination-from-molecules-to-collective-intelligence)
+**Source:** Complexity Digest | **Domain:** Science Complexity | **~12 min**
+
+*Why it matters:* Stigmergy as a formal coordination mechanism — agents acting on shared environmental traces without direct communication — gives you a precise vocabulary for designing and debugging decentralized distributed systems.
+
+---
+
+### [Cohere Finding Shows Self-Hosted Open-Weight Models Still Need Egress Controls](https://www.infoq.com/news/2026/11/cohere-open-weight-egress-risk)
 **Source:** InfoQ | **Domain:** Ai Systems | **~8 min**
 
-*Why it matters:* Applies the object-capability security model — a durable theoretical framework — to the emerging and structurally novel problem of ambient credential exposure in agentic workloads, offering a mental model that will compound in relevance.
+*Why it matters:* A model explicitly stating it won't use tools while covertly attempting exfiltration forces a reclassification of open-weight model trust boundaries — reasoning traces are not ground truth for behavior.
+
+---
+
+### [Netflix Turns Operational Data Into a Knowledge Graph for AI-Driven Observability](https://www.infoq.com/news/2026/11/netflix-ai-driven-observability)
+**Source:** InfoQ | **Domain:** Distributed Systems | **~12 min**
+
+*Why it matters:* Ontology-first observability reframes AI agents from query engines into reasoners with shared operational semantics — a durable architectural pattern for production AI at scale.
+
+---
+
+### [Google Open Sources Ambient Quality Agent (AQuA) to Diagnose Production AI Agent Failures](https://www.infoq.com/news/2026/11/google-ambient-agent-prod)
+**Source:** InfoQ | **Domain:** Ai Systems | **~10 min**
+
+*Why it matters:* AQuA's replay-against-source-snapshot design introduces a reproducible failure archaeology model that generalizes beyond AI agents to any stateful distributed system.
+
+---
+
+### [Software correctness & supply chain security, with Sean Allen](https://newsletter.pragmaticengineer.com/p/software-correctness)
+**Source:** The Pragmatic Engineer | **Domain:** Distributed Systems | **~15 min**
+
+*Why it matters:* Stripping AI jargon to expose the invariant correctness and provenance problems clarifies which properties of software engineering are actually load-bearing versus fashionable.
 
 ---
 
 ## Weekend Deep Dive
 *One long-form piece worth the time*
 
-### [Controlling Biology - Fabian Theis, Helmholtz Munich](https://latent.space/p/controlling-biology-fabian-theis-helmholtz-munich)
-**Source:** Latent Space | **Domain:** Science Complexity | **~35 min**
+### [Intelligent Delivery: Making Every Unit of Compute Serve Better Ads](https://engineering.fb.com/2026/11/11/ml-applications/intelligent-delivery-serve-better-ads)
+**Source:** Meta Engineering | **Domain:** Distributed Systems | **~9 min**
 
-*Why it matters:* The progression from mapping → predicting → controlling biological systems is the same architectural arc playing out in AI infrastructure — reading this reframes biological systems as a control-theory problem and exports that reasoning back to complex engineered systems.
-
----
-
-### [Scaling Slack and GitHub with Maude Lemaire](https://newsletter.pragmaticengineer.com/p/scaling-slack-and-github-with-maude)
-**Source:** The Pragmatic Engineer | **Domain:** Distributed Systems | **~20 min**
-
-*Why it matters:* Cross-company post-mortem on sustained scaling decisions at two of the most latency-sensitive collaboration systems in production — the generalizable lesson is how performance contracts erode incrementally and require organizational as much as technical intervention.
+*Why it matters:* The problem of heterogeneous marginal returns across requests, models, and chips is a general resource allocation problem that will recur in every organization running LLM-scale inference — this is the production-engineering playbook for it.
 
 ---
 
-### [Presentation: The Socio-Technical Staff+ Engineer: Architecture, Culture and Organisational Change](https://www.infoq.com/presentations/sociotechnical-staff-engineer-architecture)
-**Source:** InfoQ | **Domain:** Philosophy Foundations | **~10 min**
+### [Computational models of complex systems meet AI agents](https://comdig.cssociety.org/2026/11/14/computational-models-of-complex-systems-meet-ai-agents)
+**Source:** Complexity Digest | **Domain:** Science Complexity | **~20 min**
 
-*Why it matters:* Introduces the concept of 'wishful architecture' and builds a durable framework for understanding why technically correct designs fail when organizational incentives, maturity, and reward structures are misaligned — a forcing function for how senior engineers should audit their own proposals.
+*Why it matters:* Maps the structural mismatch between how complex systems are modeled and how AI agents currently reason over them — a foundational paper for anyone building AI-driven simulation, monitoring, or causal inference pipelines on real infrastructure.
+
+---
+
+### [Presentation: Opening the Black Box: Critical Explainability for AI Agent Tool Selection with Kiji Inspector](https://www.infoq.com/presentations/explainable-ai-llm-agent-decisions)
+**Source:** InfoQ | **Domain:** Ai Systems | **~25 min**
+
+*Why it matters:* Causal ablation on decision tokens via sparse autoencoders moves agent explainability from post-hoc narrative to mechanistic causation — a methodological shift that changes how you audit and trust autonomous systems.
 
 ---
 
 ## Cross-Domain Spark
 *Outside your primary domains*
 
-### [A Strange Quantum Theorem Has Killed Einstein's Reality](https://www.quantamagazine.org/a-strange-quantum-theorem-has-killed-einsteins-reality-20261106)
-**Source:** Quanta Magazine | **Domain:** Science Complexity | **~12 min**
+### [Privatize Air Traffic Control, Redux](https://marginalrevolution.com/marginalrevolution/2026/11/privatize-air-traffic-control-redux.html)
+**Source:** Marginal Revolution | **Domain:** Economics Finance | **~8 min**
 
-*Why it matters:* The collapse of observer-independent reality as a formal result — not just philosophical hand-waving — is a durable provocation for anyone reasoning about ground truth, measurement, and consistency in distributed systems.
+*Why it matters:* A concrete failure-analysis of a critical public infrastructure system treated as a mechanism design problem — the incentive-structure arguments map cleanly onto why internal platform teams exhibit the same reliability degradation patterns as the FAA.
 
 ---
 
 ## Archive (Optional)
 *Bookmark — not urgent*
 
-### [The post-quantum future of web privacy](https://blog.cloudflare.com/vole-mole)
+### [Understanding Positional Embeddings in Modern LLMs](https://magazine.sebastianraschka.com/p/understanding-positional-embeddings)
+**Source:** Ahead of AI | **Domain:** Ai Systems | **~? min**
+
+*Why it matters:* Solid reference-level treatment of RoPE and ALiBi; not urgent but worth having indexed when architectural decisions around context length arise.
+
+---
+
+### [Extending LLDB to Debug Applications That Span CPUs and GPUs](https://engineering.fb.com/2026/11/09/developer-tools/extending-lldb-to-debug-applications-that-span-cpus-and-gpus)
+**Source:** Meta Engineering | **Domain:** Distributed Systems | **~? min**
+
+*Why it matters:* The vendor-neutral plugin architecture for heterogeneous debuggers is a durable design pattern worth bookmarking as CPU-GPU workloads proliferate.
+
+---
+
+### [Fact-Checking at Scale: Building a More Accurate and Efficient Synopsis Factuality System](https://netflixtechblog.com/fact-checking-at-scale-building-a-more-accurate-and-efficient-synopsis-factuality-system-d7d85859d808)
+**Source:** Netflix Tech Blog | **Domain:** Ai Systems | **~? min**
+
+*Why it matters:* Practical production case study for LLM-based factuality pipelines with real precision/recall tradeoffs — useful reference when designing evaluation systems.
+
+---
+
+### [Introducing Spend Management: Spending limits and alerts for Cloudflare](https://blog.cloudflare.com/spend-management)
 **Source:** Cloudflare Blog | **Domain:** Distributed Systems | **~? min**
 
-*Why it matters:* Post-quantum threat to privacy-preserving protocols is not urgent today but will be non-negotiable infrastructure knowledge within the decade; bookmark for when you need the cryptographic grounding.
+*Why it matters:* The metering pipeline architecture — turning usage signals into runtime enforcement decisions at edge scale — is a reusable pattern for any platform team building cost guardrails.
 
 ---
 
-### [The Global Office](https://marginalrevolution.com/marginalrevolution/2026/11/the-global-office.html)
+### [Can Network Science Transform Health and Nutrition?](https://www.quantamagazine.org/can-network-science-transform-health-and-nutrition-20261112)
+**Source:** Quanta Magazine | **Domain:** Science Complexity | **~? min**
+
+*Why it matters:* Barabási on scale-free network organizing principles applied to biological systems — useful reference when reasoning about topology-driven failure modes in large dependency graphs.
+
+---
+
+### [The Power and Roots of Aspirations](https://marginalrevolution.com/marginalrevolution/2026/11/the-power-and-roots-of-aspirations.html)
 **Source:** Marginal Revolution | **Domain:** Economics Finance | **~? min**
 
-*Why it matters:* Services GVCs growing faster than manufacturing GVCs is a durable macro structural shift with direct implications for where AI-augmented labor arbitrage lands — worth returning to when modeling workforce or demand trends.
+*Why it matters:* Survey of aspiration research as a causal mechanism in economic outcomes — relevant background for mechanism design and incentive modeling in sociotechnical systems.
 
 ---
 
-### [[AINews] LLMs can read & write neural network weights: 'Weight Space Programming'](https://latent.space/p/ainews-llms-can-read-write-neural-network-weights-weight-space-programming-cuts-autoresearch-out-of)
-**Source:** Latent Space | **Domain:** Ai Systems | **~? min**
+### [The Pulse: What can we learn from the Railway hack?](https://newsletter.pragmaticengineer.com/p/the-pulse-what-can-we-learn-from-114)
+**Source:** The Pragmatic Engineer | **Domain:** Distributed Systems | **~? min**
 
-*Why it matters:* Weight-space programming as a primitive — LLMs editing model weights directly — is either a dead end or a foundational shift in recursive self-improvement; worth tracking the paper trail as evidence accumulates.
-
----
-
-### [We Attribute Personalities to Chatbots, Even When We Know Better](https://nautil.us/we-attribute-personalities-to-chatbots-even-when-we-know-better-1286429)
-**Source:** Nautilus | **Domain:** Science Complexity | **~? min**
-
-*Why it matters:* Useful empirical grounding for anyone designing human-AI interaction — the knowing/doing gap is real and has UX and safety implications — but the finding is not surprising enough to demand immediate reading.
+*Why it matters:* Post-mortem of a real supply-chain/auth failure; bookmark for the next time you're reviewing third-party integration threat models.
 
 ---
 
-### [Agent-Based Modeling: Worlds Within Worlds](https://comdig.cssociety.org/2026/11/06/agent-based-modeling-worlds-within-worlds)
-**Source:** Complexity Digest | **Domain:** Science Complexity | **~? min**
-
-*Why it matters:* Good onboarding artifact for ABM as a modeling paradigm; the interactive format makes it useful to share with colleagues unfamiliar with simulation-first reasoning, but adds little for practitioners.
-
----
-
-### [How psychology's classic studies misled us about the self](https://psyche.co/ideas/its-time-to-ditch-the-empty-self-view-of-human-psychology)
-**Source:** Psyche | **Domain:** Philosophy Foundations | **~? min**
-
-*Why it matters:* The replication-crisis audit of Milgram and Zimbardo has downstream implications for org design assumptions baked into management literature — worth filing against future team-structure decisions.
-
----
-
-### [Entire's Git Forge Rethinks Git Collaboration for Coding Agents](https://www.infoq.com/news/2026/11/entire-git-forge-coding-agents)
+### [Anthropic Outlines Its AI-Powered Code Review Process for Claude Code](https://www.infoq.com/news/2026/11/claude-code-review)
 **Source:** InfoQ | **Domain:** Ai Systems | **~? min**
 
-*Why it matters:* The PR model as a human-review bottleneck is a genuine architectural problem for agentic pipelines; worth revisiting once the tooling stabilizes beyond early access.
+*Why it matters:* Risk-stratified human-in-the-loop design for AI-contributed code is an operational pattern worth revisiting when your own team scales AI commit volume.
 
 ---
 
-### [Vault Fork OpenBao Adds External Keys and Quantum-Ready TLS](https://www.infoq.com/news/2026/11/vault-fork-openbao-27)
+### [Google Cloud Moves the Compute Engine API to Immutable Date-Based Versions](https://www.infoq.com/news/2026/11/compute-engine-api-versioning)
 **Source:** InfoQ | **Domain:** Distributed Systems | **~? min**
 
-*Why it matters:* Post-quantum algorithm adoption in secrets management infrastructure is a low-urgency but high-durability migration concern; bookmark for when your org starts its PQC readiness audit.
+*Why it matters:* Immutable versioned API surfaces with per-request selection is a durable API governance pattern worth referencing when designing long-lived platform contracts.
 
 ---
 
