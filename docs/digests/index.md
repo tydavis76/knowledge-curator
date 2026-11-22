@@ -2,6 +2,7 @@
 
 All weekly knowledge digests, newest first.
 
+- [November 22, 2026](2026-11-22.md)
 - [November 15, 2026](2026-11-15.md)
 - [November 8, 2026](2026-11-08.md)
 - [November 1, 2026](2026-11-01.md)
